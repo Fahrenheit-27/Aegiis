@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegiis - Rank System</title>
+    <style>
+        :root {
+            --primary: #FF6B00;
+            --primary-dark: #E55400;
+            --primary-light: #FF8A3D;
+            --dark: #1E1E1E;
+            --darker: #121212;
+            --gray: #2D2D2D;
+            --light-gray: #424242;
+            --text: #F1F1F1;
+            --success: #00C853;
+            --warning: #FFD600;
+            --danger: #F44336;
+            --hero: #55C8FF;
+            --conqueror: #00B0FF;
+            --legend: #AA00FF;
+            --myth: #FFD600;
+            --demigod: #FF6B00;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background-color: var(--darker);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 2rem;
+            background-color: rgba(18, 18, 18, 0.95);
+            border-bottom: 1px solid var(--gray);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-shield {
+            width: 32px;
+            height: 32px;
+            fill: var(--primary);
+        }
+        
+        .logo-shield .outline {
+            stroke: var(--primary);
+            stroke-width: 2;
+            fill: none;
+        }
+        
+        .logo-shield .fill {
+            fill: var(--primary);
+            opacity: 0.6;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .nav-link.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .notifications {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .notifications-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .profile:hover {
+            background-color: var(--gray);
+        }
+        
+        .profile-img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .username {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .rank {
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--hero), var(--demigod));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--light-gray);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .rank-system-container {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .section {
+            background-color: var(--dark);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+        }
+        
+        .section-description {
+            color: var(--light-gray);
+            margin-bottom: 2rem;
+        }
+        
+        .rank-tiers {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .tier-card {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: var(--gray);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tier-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tier-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+        }
+        
+        .tier-hero::before {
+            background-color: var(--hero);
+        }
+        
+        .tier-conqueror::before {
+            background-color: var(--conqueror);
+        }
+        
+        .tier-legend::before {
+            background-color: var(--legend);
+        }
+        
+        .tier-myth::before {
+            background-color: var(--myth);
+        }
+        
+        .tier-demigod::before {
+            background-color: var(--demigod);
+        }
+        
+        .tier-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .tier-hero .tier-icon {
+            background-color: rgba(85, 200, 255, 0.1);
+            color: var(--hero);
+        }
+        
+        .tier-conqueror .tier-icon {
+            background-color: rgba(0, 176, 255, 0.1);
+            color: var(--conqueror);
+        }
+        
+        .tier-legend .tier-icon {
+            background-color: rgba(170, 0, 255, 0.1);
+            color: var(--legend);
+        }
+        
+        .tier-myth .tier-icon {
+            background-color: rgba(255, 214, 0, 0.1);
+            color: var(--myth);
+        }
+        
+        .tier-demigod .tier-icon {
+            background-color: rgba(255, 107, 0, 0.1);
+            color: var(--demigod);
+        }
+        
+        .tier-icon svg {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .tier-info {
+            flex: 1;
+        }
+        
+        .tier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .tier-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .tier-hero .tier-name {
+            color: var(--hero);
+        }
+        
+        .tier-conqueror .tier-name {
+            color: var(--conqueror);
+        }
+        
+        .tier-legend .tier-name {
+            color: var(--legend);
+        }
+        
+        .tier-myth .tier-name {
+            color: var(--myth);
+        }
+        
+        .tier-demigod .tier-name {
+            color: var(--demigod);
+        }
+        
+        .tier-requirement {
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .tier-hero .tier-requirement {
+            background-color: rgba(85, 200, 255, 0.1);
+            color: var(--hero);
+        }
+        
+        .tier-conqueror .tier-requirement {
+            background-color: rgba(0, 176, 255, 0.1);
+            color: var(--conqueror);
+        }
+        
+        .tier-legend .tier-requirement {
+            background-color: rgba(170, 0, 255, 0.1);
+            color: var(--legend);
+        }
+        
+        .tier-myth .tier-requirement {
+            background-color: rgba(255, 214, 0, 0.1);
+            color: var(--myth);
+        }
+        
+        .tier-demigod .tier-requirement {
+            background-color: rgba(255, 107, 0, 0.1);
+            color: var(--demigod);
+        }
+        
+        .tier-description {
+            margin-bottom: 1rem;
+        }
+        
+        .tier-benefits {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .tier-benefit {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .progress-visualization {
+            margin-top: 3rem;
+        }
+        
+        .interactive-rank-path {
+            position: relative;
+            height: 200px;
+            margin-top: 2rem;
+        }
+        
+        .rank-path {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: var(--gray);
+            border-radius: 4px;
+            transform: translateY(-50%);
+        }
+        
+        .rank-marker {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+        
+        .marker-inner {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 3px solid var(--darker);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .marker-hero {
+            left: 10%;
+            background-color: var(--hero);
+        }
+        
+        .marker-conqueror {
+            left: 30%;
+            background-color: var(--conqueror);
+        }
+        
+        .marker-legend {
+            left: 50%;
+            background-color: var(--legend);
+        }
+        
+        .marker-myth {
+            left: 70%;
+            background-color: var(--myth);
+        }
+        
+        .marker-demigod {
+            left: 90%;
+            background-color: var(--demigod);
+        }
+        
+        .rank-label {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .challenges-count {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.9rem;
+            color: var(--light-gray);
+        }
+        
+        .user-progress {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 8px;
+            background: linear-gradient(90deg, var(--hero), var(--conqueror));
+            border-radius: 4px;
+            transform: translateY(-50%);
+            width: 20%;
+            z-index: 1;
+        }
+        
+        .user-marker {
+            position: absolute;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+        }
+        
+        .user-marker-inner {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            border: 3px solid var(--darker);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            box-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+        }
+        
+        .user-marker-pulse {
+            position: absolute;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(255, 107, 0, 0.3);
+            z-index: 2;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .input-container {
+            margin-top: 3rem;
+            background-color: var(--gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .input-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .slider-container {
+            margin-bottom: 1rem;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .slider-input {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: var(--dark);
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid var(--darker);
+        }
+        
+        .slider-input::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid var(--darker);
+        }
+        
+        .slider-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .rank-calculation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        .calculation-result {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .result-rank {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        
+        .result-progress {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+        }
+        
+        .next-rank-progress {
+            flex: 1;
+            margin: 0 2rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--dark);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+        
+        .milestone-section {
+            margin-top: 3rem;
+        }
+        
+        .milestones {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .milestone-card {
+            background-color: var(--gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .milestone-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .milestone-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .milestone-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(255, 107, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        
+        .milestone-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .milestone-description {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+        }
+        
+        .milestone-achievement {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        
+        .achievement-label {
+            font-weight: 500;
+        }
+        
+        .achievement-badge {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .faqs {
+            margin-top: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .faq-item {
+            background-color: var(--gray);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .faq-question:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .faq-toggle {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+        
+        .faq-answer {
+            padding: 0 1.2rem 1.2rem;
+            color: var(--light-gray);
+        }
+        
+        .faq-answer p {
+            margin-bottom: 0.8rem;
+        }
+        
+        .faq-answer p:last-child {
+            margin-bottom: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .tier-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .tier-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .tier-benefits {
+                justify-content: center;
+            }
+            
+            .rank-calculation {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .next-rank-progress {
+                width: 100%;
+                margin: 1rem 0;
+            }
+            
+            .interactive-rank-path {
+                height: 250px;
+            }
+            
+            .rank-label, .challenges-count {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <svg class="logo-shield" viewBox="0 0 24 24">
+                <path class="outline" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path class="fill" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            AEGIIS
+        </a>
+        <div class="nav-links">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Challenges</a>
+            <a href="#" class="nav-link">Learning Paths</a>
+            <a href="#" class="nav-link">AI Tools</a>
+            <a href="#" class="nav-link">Community</a>
+        </div>
+        <div class="user-menu">
+            <div class="notifications">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="notifications-count">3</span>
+            </div>
+            <div class="profile">
+                <div class="profile-img">US</div>
+                <div class="profile-info">
+                    <span class="username">Utkarsh Singh</span>
+                    <span class="rank">Hero</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">Aegiis Rank System</h1>
+            <p class="page-subtitle">Climb the ranks from Hero to Demigod as you master cybersecurity skills and complete challenges. Each rank unlocks new privileges and recognizes your growing expertise.</p>
+        </div>
+        
+        <div class="rank-system-container">
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Rank Tiers</h2>
+                    <p class="section-description">The Aegiis rank system draws inspiration from Greek mythology, with each tier representing increasing levels of mastery and accomplishment in cybersecurity defense.</p>
+                </div>
+                
+                <div class="rank-tiers">
+                    <div class="tier-card tier-hero">
+                        <div class="tier-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                        </div>
+                        <div class="tier-info">
+                            <div class="tier-header">
+                                <h3 class="tier-name">Legend</h3>
+                                <span class="tier-requirement">500 Challenges</span>
+                            </div>
+                            <p class="tier-description">Legends have proven themselves as exceptional defenders with deep knowledge across security domains. Their expertise is recognized throughout the Aegiis community.</p>
+                            <div class="tier-benefits">
+                                <span class="tier-benefit">Exclusive Legend-tier challenges</span>
+                                <span class="tier-benefit">Beta testing participation</span>
+                                <span class="tier-benefit">Challenge solution features</span>
+                                <span class="tier-benefit">Community leadership opportunities</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tier-card tier-myth">
+                        <div class="tier-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path>
+                                <line x1="16" y1="8" x2="2" y2="22"></line>
+                                <line x1="17.5" y1="15" x2="9" y2="15"></line>
+                            </svg>
+                        </div>
+                        <div class="tier-info">
+                            <div class="tier-header">
+                                <h3 class="tier-name">Myth</h3>
+                                <span class="tier-requirement">1000 Challenges</span>
+                            </div>
+                            <p class="tier-description">Myths are the rare elite who have mastered all aspects of cybersecurity defense. Their solutions serve as references and their contributions shape the platform.</p>
+                            <div class="tier-benefits">
+                                <span class="tier-benefit">Unlimited challenge creation</span>
+                                <span class="tier-benefit">Product advisory access</span>
+                                <span class="tier-benefit">Featured community contributions</span>
+                                <span class="tier-benefit">Exclusive webinars and events</span>
+                                <span class="tier-benefit">Specialized challenge paths</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tier-card tier-demigod">
+                        <div class="tier-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                <path d="M2 17l10 5 10-5"></path>
+                                <path d="M2 12l10 5 10-5"></path>
+                            </svg>
+                        </div>
+                        <div class="tier-info">
+                            <div class="tier-header">
+                                <h3 class="tier-name">Demigod</h3>
+                                <span class="tier-requirement">1500 Challenges</span>
+                            </div>
+                            <p class="tier-description">Demigods are the pinnacle of cybersecurity expertise. They have transcended typical skill levels and represent the highest echelon of defenders in the Aegiis ecosystem.</p>
+                            <div class="tier-benefits">
+                                <span class="tier-benefit">Custom profile enhancements</span>
+                                <span class="tier-benefit">Aegiis partner network access</span>
+                                <span class="tier-benefit">Platform development influence</span>
+                                <span class="tier-benefit">Recognition on platform leaderboards</span>
+                                <span class="tier-benefit">Speaking opportunities at events</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="progress-visualization">
+                    <h3 class="section-title">Your Progress Path</h3>
+                    <p class="section-description">Track your journey through the ranks as you complete challenges and strengthen your cybersecurity skills.</p>
+                    
+                    <div class="interactive-rank-path">
+                        <div class="rank-path"></div>
+                        <div class="user-progress"></div>
+                        <div class="user-marker-pulse"></div>
+                        <div class="user-marker">
+                            <div class="user-marker-inner">187</div>
+                        </div>
+                        
+                        <div class="rank-marker marker-hero">
+                            <div class="marker-inner"></div>
+                            <div class="rank-label">Hero</div>
+                            <div class="challenges-count">100</div>
+                        </div>
+                        
+                        <div class="rank-marker marker-conqueror">
+                            <div class="marker-inner"></div>
+                            <div class="rank-label">Conqueror</div>
+                            <div class="challenges-count">300</div>
+                        </div>
+                        
+                        <div class="rank-marker marker-legend">
+                            <div class="marker-inner"></div>
+                            <div class="rank-label">Legend</div>
+                            <div class="challenges-count">500</div>
+                        </div>
+                        
+                        <div class="rank-marker marker-myth">
+                            <div class="marker-inner"></div>
+                            <div class="rank-label">Myth</div>
+                            <div class="challenges-count">1000</div>
+                        </div>
+                        
+                        <div class="rank-marker marker-demigod">
+                            <div class="marker-inner"></div>
+                            <div class="rank-label">Demigod</div>
+                            <div class="challenges-count">1500</div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-container">
+                        <h3 class="input-title">Calculate Your Rank</h3>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Number of Challenges Completed</span>
+                                <span class="slider-value">187</span>
+                            </div>
+                            <input type="range" min="0" max="1600" value="187" class="slider-input" id="challengeSlider">
+                        </div>
+                        
+                        <div class="rank-calculation">
+                            <div class="calculation-result">
+                                <div class="result-rank">Hero</div>
+                                <div class="result-progress">187/300 challenges</div>
+                            </div>
+                            
+                            <div class="next-rank-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 43%; background-color: var(--hero);"></div>
+                                </div>
+                                <div class="progress-labels">
+                                    <span>Hero (100)</span>
+                                    <span>Conqueror (300)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="calculation-result">
+                                <div class="result-rank">113</div>
+                                <div class="result-progress">challenges to next rank</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section milestone-section">
+                <div class="section-header">
+                    <h2 class="section-title">Rank Milestones & Achievements</h2>
+                    <p class="section-description">As you progress through ranks, you'll unlock special achievements and milestones that showcase your growing expertise.</p>
+                </div>
+                
+                <div class="milestones">
+                    <div class="milestone-card">
+                        <div class="milestone-header">
+                            <div class="milestone-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                    <line x1="4" y1="22" x2="4" y2="15"></line>
+                                </svg>
+                            </div>
+                            <h3 class="milestone-title">Weekly Streaks</h3>
+                        </div>
+                        <p class="milestone-description">Maintain consistent engagement by completing challenges regularly. Longer streaks contribute to faster rank progression.</p>
+                        <div class="milestone-achievement">
+                            <span class="achievement-label">7-Day Streak</span>
+                            <span class="achievement-badge">+5% Rank Progress</span>
+                        </div>
+                        <div class="milestone-achievement">
+                            <span class="achievement-label">30-Day Streak</span>
+                            <span class="achievement-badge">+15% Rank Progress</span>
+                        </div>
+                    </div>
+                    
+                    <div class="milestone-card">
+                        <div class="milestone-header">
+                            <div class="milestone-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                    <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                    <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                </svg>
+                            </div>
+                            <h3 class="milestone-title">Community Contributions</h3>
+                        </div>
+                        <p class="milestone-description">Contribute to the Aegiis community by helping others, creating content, or participating in discussions.</p>
+                        <div class="milestone-achievement">
+                            <span class="achievement-label">50 Helpful Responses</span>
+                            <span class="achievement-badge">+3% Rank Progress</span>
+                        </div>
+                        <div class="milestone-achievement">
+                            <span class="achievement-label">Create a Tutorial</span>
+                            <span class="achievement-badge">+5% Rank Progress</span>
+                        </div>
+                    </div>
+                    
+                    <div class="milestone-card">
+                        <div class="milestone-header">
+                            <div class="milestone-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                                    <line x1="6" y1="1" x2="6" y2="4"></line>
+                                    <line x1="10" y1="1" x2="10" y2="4"></line>
+                                    <line x1="14" y1="1" x2="14" y2="4"></line>
+                                </svg>
+                            </div>
+                            <h3 class="milestone-title">Challenge Diversity</h3>
+                        </div>
+                        <p class="milestone-description">Demonstrate well-rounded expertise by completing challenges across different security domains.</p>
+                        <div class="milestone-achievement">
+                            <span class="achievement-label">5 Categories Mastered</span>
+                            <span class="achievement-badge">+10% Rank Progress</span>
+                        </div>
+                        <div class="milestone-achievement">
+                            <span class="achievement-label">Complete All Categories</span>
+                            <span class="achievement-badge">+20% Rank Progress</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Frequently Asked Questions</h2>
+                    <p class="section-description">Common questions about the Aegiis rank system and progression mechanics.</p>
+                </div>
+                
+                <div class="faqs">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="question-text">How is my rank progress calculated?</span>
+                            <div class="faq-toggle">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Your rank progress is primarily determined by the number of challenges you've successfully completed. Each completed challenge adds to your total count, with progress toward the next rank shown as a percentage.</p>
+                            <p>Additional factors that can boost your progress include maintaining streaks, contributing to the community, completing diverse challenge types, and participating in special events.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="question-text">Can my rank decrease over time?</span>
+                            <div class="faq-toggle">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>No, once you've achieved a certain rank, it's permanently yours. You'll never lose a rank you've earned, even if you take a break from Aegiis.</p>
+                            <p>However, weekly and monthly leaderboard positions can fluctuate based on your recent activity compared to other community members.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="question-text">How do challenge difficulty levels affect my rank?</span>
+                            <div class="faq-toggle">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>While all successfully completed challenges count toward your rank progression, higher difficulty challenges may offer additional benefits:</p>
+                            <p>- Medium difficulty challenges count as 1 challenge toward your rank</p>
+                            <p>- Hard difficulty challenges count as 1 challenge but may offer bonus achievement points</p>
+                            <p>- Expert difficulty challenges count as 1 challenge but offer specialized recognition and faster streak progression</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="question-text">Are there any other benefits to higher ranks?</span>
+                            <div class="faq-toggle">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, higher ranks unlock numerous platform benefits beyond those listed in the rank descriptions:</p>
+                            <p>- Enhanced profile customization options</p>
+                            <p>- Access to exclusive Discord channels</p>
+                            <p>- Opportunities to contribute to challenge creation</p>
+                            <p>- Priority access to platform support</p>
+                            <p>- Eligibility for occasional real-world perks and recognition</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <script>
+        // Interactive rank calculator
+        const slider = document.getElementById('challengeSlider');
+        const sliderValue = document.querySelector('.slider-value');
+        const resultRank = document.querySelector('.result-rank');
+        const resultProgress = document.querySelector('.result-progress');
+        const progressFill = document.querySelector('.progress-fill');
+        const challengesToNext = document.querySelector('.calculation-result:last-child .result-rank');
+        const userMarker = document.querySelector('.user-marker');
+        const userMarkerPulse = document.querySelector('.user-marker-pulse');
+        const userProgress = document.querySelector('.user-progress');
+        
+        slider.addEventListener('input', updateRank);
+        
+        function updateRank() {
+            const challenges = parseInt(slider.value);
+            sliderValue.textContent = challenges;
+            
+            // Update user marker position
+            const percentage = Math.min((challenges / 1500) * 100, 100);
+            const markerPosition = percentage + '%';
+            userMarker.style.left = markerPosition;
+            userMarkerPulse.style.left = markerPosition;
+            userProgress.style.width = markerPosition;
+            userMarker.querySelector('.user-marker-inner').textContent = challenges;
+            
+            // Determine rank and next rank
+            let rank, nextRank, progress, total, remaining;
+            
+            if (challenges < 100) {
+                rank = 'Novice';
+                nextRank = 'Hero';
+                progress = challenges;
+                total = 100;
+            } else if (challenges < 300) {
+                rank = 'Hero';
+                nextRank = 'Conqueror';
+                progress = challenges - 100;
+                total = 200;
+            } else if (challenges < 500) {
+                rank = 'Conqueror';
+                nextRank = 'Legend';
+                progress = challenges - 300;
+                total = 200;
+            } else if (challenges < 1000) {
+                rank = 'Legend';
+                nextRank = 'Myth';
+                progress = challenges - 500;
+                total = 500;
+            } else if (challenges < 1500) {
+                rank = 'Myth';
+                nextRank = 'Demigod';
+                progress = challenges - 1000;
+                total = 500;
+            } else {
+                rank = 'Demigod';
+                nextRank = 'Demigod';
+                progress = 500;
+                total = 500;
+            }
+            
+            remaining = total - progress;
+            
+            // Update display
+            resultRank.textContent = rank;
+            
+            if (rank === 'Demigod') {
+                resultProgress.textContent = 'Maximum rank achieved';
+                challengesToNext.textContent = '0';
+                document.querySelector('.result-progress:last-child').textContent = 'challenges to next rank';
+            } else {
+                resultProgress.textContent = `${challenges}/${challenges + remaining} challenges`;
+                challengesToNext.textContent = remaining;
+                document.querySelector('.result-progress:last-child').textContent = 'challenges to next rank';
+            }
+            
+            // Update progress bar
+            const fillPercentage = (progress / total) * 100;
+            progressFill.style.width = fillPercentage + '%';
+            
+            // Set progress fill color based on rank
+            switch(rank) {
+                case 'Novice':
+                    progressFill.style.backgroundColor = '#cccccc';
+                    break;
+                case 'Hero':
+                    progressFill.style.backgroundColor = 'var(--hero)';
+                    break;
+                case 'Conqueror':
+                    progressFill.style.backgroundColor = 'var(--conqueror)';
+                    break;
+                case 'Legend':
+                    progressFill.style.backgroundColor = 'var(--legend)';
+                    break;
+                case 'Myth':
+                    progressFill.style.backgroundColor = 'var(--myth)';
+                    break;
+                case 'Demigod':
+                    progressFill.style.backgroundColor = 'var(--demigod)';
+                    break;
+            }
+            
+            // Update progress labels
+            document.querySelector('.progress-labels span:first-child').textContent = `${rank} (${challenges})`;
+            document.querySelector('.progress-labels span:last-child').textContent = `${nextRank} (${challenges + remaining})`;
+        }
+        
+        // FAQ toggles
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const toggle = question.querySelector('.faq-toggle');
+                
+                // Toggle visibility
+                if (answer.style.display === 'block') {
+                    answer.style.display = 'none';
+                    toggle.style.transform = 'rotate(0deg)';
+                } else {
+                    answer.style.display = 'block';
+                    toggle.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+        
+        // Initialize with default values
+        updateRank();
+        
+        // Hide FAQ answers initially
+        document.querySelectorAll('.faq-answer').forEach(answer => {
+            answer.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
+" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="8" r="7"></circle>
+                                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                            </svg>
+                        </div>
+                        <div class="tier-info">
+                            <div class="tier-header">
+                                <h3 class="tier-name">Hero</h3>
+                                <span class="tier-requirement">100 Challenges</span>
+                            </div>
+                            <p class="tier-description">Heroes are the guardians who have proven their basic proficiency in cybersecurity defense. They have demonstrated the ability to identify and address common vulnerabilities.</p>
+                            <div class="tier-benefits">
+                                <span class="tier-benefit">Access to intermediate challenges</span>
+                                <span class="tier-benefit">Community forum badge</span>
+                                <span class="tier-benefit">Monthly challenge participation</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tier-card tier-conqueror">
+                        <div class="tier-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 5H5v14h14V5z"></path>
+                                <path d="M5 5L19 19"></path>
+                            </svg>
+                        </div>
+                        <div class="tier-info">
+                            <div class="tier-header">
+                                <h3 class="tier-name">Conqueror</h3>
+                                <span class="tier-requirement">300 Challenges</span>
+                            </div>
+                            <p class="tier-description">Conquerors have overcome significant security challenges and mastered defensive techniques across multiple domains. They are skilled in preventing various attack vectors.</p>
+                            <div class="tier-benefits">
+                                <span class="tier-benefit">Access to advanced challenges</span>
+                                <span class="tier-benefit">Ability to create custom challenges</span>
+                                <span class="tier-benefit">Early access to new features</span>
+                                <span class="tier-benefit">Community mentorship opportunities</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tier-card tier-legend">
+                        <div class="tier-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                        </div>
+                        <div class="tier-info">
+                            <div class="tier-header">
+                                <h3 class="tier-name">Legend</h3>
+                                <span class="tier-requirement">500 Challenges</span>
+                            </div>
+                            <p class="tier-description">Legends have proven themselves as exceptional defenders with deep knowledge across security domains. Their expertise is recognized throughout the Aegiis community.</p>
+                            <div class="tier-benefits">
+                                <span class="tier-benefit">Exclusive Legend-tier challenges</span>
+                                <span class="tier-benefit">Beta testing participation</span>
+                                <span class="tier-benefit">Challenge solution features</span>
+                                <span class="tier-benefit">Community leadership opportunities</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tier-card tier-myth">
+                        <div class="tier-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2

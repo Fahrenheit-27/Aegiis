@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegiis - Sign Up</title>
+    <style>
+        :root {
+            --primary: #FF6B00;
+            --primary-dark: #E55400;
+            --primary-light: #FF8A3D;
+            --dark: #1E1E1E;
+            --darker: #121212;
+            --gray: #2D2D2D;
+            --light-gray: #424242;
+            --text: #F1F1F1;
+            --success: #00C853;
+            --warning: #FFD600;
+            --danger: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background-color: var(--darker);
+            color: var(--text);
+            line-height: 1.6;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 2rem;
+            background-color: var(--dark);
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .logo {
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .signup-container {
+            display: flex;
+            width: 80%;
+            max-width: 1200px;
+            background-color: var(--dark);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .signup-hero {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+        
+        .hero-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.2;
+        }
+        
+        .hero-shield {
+            position: absolute;
+            bottom: -100px;
+            right: -80px;
+            width: 300px;
+            height: 300px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: contain;
+            opacity: 0.15;
+            transform: scale(5);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .signup-form-container {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .form-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-subtitle {
+            color: var(--light-gray);
+        }
+        
+        .signup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-group label {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .input-field {
+            padding: 0.8rem 1rem;
+            border-radius: 4px;
+            background-color: var(--gray);
+            border: 1px solid var(--light-gray);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2);
+        }
+        
+        .name-row {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .name-row .form-group {
+            flex: 1;
+        }
+        
+        .password-field {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--light-gray);
+            cursor: pointer;
+        }
+        
+        .password-strength {
+            height: 5px;
+            width: 100%;
+            background-color: var(--gray);
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .password-meter {
+            height: 100%;
+            width: 70%;
+            background-color: var(--warning);
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .password-hint {
+            font-size: 0.8rem;
+            color: var(--light-gray);
+            margin-top: 0.5rem;
+        }
+        
+        .terms {
+            display: flex;
+            align-items: start;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        
+        .terms input {
+            margin-top: 0.3rem;
+        }
+        
+        .terms label {
+            font-size: 0.9rem;
+        }
+        
+        .terms a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .signup-btn {
+            margin-top: 1.5rem;
+        }
+        
+        .login-prompt {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .login-prompt a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .social-login {
+            margin-top: 2rem;
+        }
+        
+        .social-login-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--light-gray);
+            font-size: 0.9rem;
+        }
+        
+        .social-login-title::before,
+        .social-login-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: var(--gray);
+        }
+        
+        .social-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            background-color: var(--gray);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .social-btn:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .social-icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        @media (max-width: 992px) {
+            .signup-container {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .signup-hero {
+                padding: 2rem;
+            }
+            
+            .hero-shield {
+                bottom: -150px;
+                right: -150px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .signup-container {
+                width: 100%;
+            }
+            
+            .signup-form-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            .name-row {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .social-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            AEGIIS
+        </a>
+        <div class="nav-links">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Challenges</a>
+            <a href="#" class="nav-link">Learn</a>
+            <a href="#" class="nav-link">Community</a>
+        </div>
+    </nav>
+    
+    <div class="main-content">
+        <div class="signup-container">
+            <div class="signup-hero">
+                <div class="hero-pattern"></div>
+                <div class="hero-shield"></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">Master Cybersecurity Skills</h1>
+                    <p class="hero-subtitle">Join Aegiis to enhance your defensive coding skills and become a cyber guardian.</p>
+                    
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <span>Realistic security challenges</span>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <span>AI-powered code assistance</span>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <span>Learn industry best practices</span>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <span>Build your security career</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="signup-form-container">
+                <div class="form-header">
+                    <h2 class="form-title">Create Your Account</h2>
+                    <p class="form-subtitle">Start your journey to becoming a cybersecurity expert</p>
+                </div>
+                
+                <form class="signup-form">
+                    <div class="name-row">
+                        <div class="form-group">
+                            <label for="first-name">First Name</label>
+                            <input type="text" id="first-name" class="input-field" placeholder="Enter your first name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="last-name">Last Name</label>
+                            <input type="text" id="last-name" class="input-field" placeholder="Enter your last name">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" class="input-field" placeholder="Enter your email address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" class="input-field" placeholder="Choose a unique username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-field">
+                            <input type="password" id="password" class="input-field" placeholder="Create a strong password">
+                            <button type="button" class="password-toggle">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-meter"></div>
+                        </div>
+                        <div class="password-hint">Password should be at least a8 characters with letters, numbers & symbols</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <div class="password-field">
+                            <input type="password" id="confirm-password" class="input-field" placeholder="Confirm your password">
+                            <button type="button" class="password-toggle">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="terms">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary signup-btn">Create Account</button>
+                    
+                    <div class="login-prompt">
+                        Already have an account? <a href="#">Log in</a>
+                    </div>
+                    
+                    <div class="social-login">
+                        <div class="social-login-title">Or sign up with</div>
+                        
+                        <div class="social-buttons">
+                            <div class="social-btn">
+                                <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#4285F4">
+                                    <path d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27 3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10 5.35 0 9.25-3.67 9.25-9.09 0-1.15-.15-1.81-.15-1.81z" />
+                                </svg>
+                                <span>Google</span>
+                            </div>
+                            
+                            <div class="social-btn">
+                                <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#24292e">
+                                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.933.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z" />
+                                </svg>
+                                <span>GitHub</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

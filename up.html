@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegiis - Secure Login</title>
+    <style>
+        :root {
+            --primary-color: #FF6B00;
+            --primary-hover: #FF8124;
+            --dark-color: #121212;
+            --text-light: #FFFFFF;
+            --text-dark: #333333;
+            --error-color: #FF3B30;
+            --success-color: #34C759;
+            --border-color: #2A2A2A;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: var(--text-light);
+        }
+        
+        .login-container {
+            background-color: #1E1E1E;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            width: 380px;
+            max-width: 90%;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-container svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-container h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        
+        .logo-container p {
+            margin: 5px 0 0;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #CCC;
+            font-size: 14px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #2A2A2A;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            color: var(--text-light);
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.25);
+        }
+        
+        .form-button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        
+        .form-button:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .success {
+            background-color: rgba(52, 199, 89, 0.15);
+            border: 1px solid rgba(52, 199, 89, 0.3);
+            color: var(--success-color);
+        }
+        
+        .error {
+            background-color: rgba(255, 59, 48, 0.15);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            color: var(--error-color);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 13px;
+            color: #777;
+        }
+        
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-container">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Classic Shield Shape -->
+                <path d="M12 22C12 22 20 18 20 12V4L12 2L4 4V12C4 18 12 22 12 22Z" fill="#1E1E1E" stroke="#FF6B00" stroke-width="2" stroke-linejoin="round"/>
+                <!-- Shield Emblem -->
+                <path d="M12 18C12 18 16 15.5 16 12V7L12 6L8 7V12C8 15.5 12 18 12 18Z" fill="#FF6B00" stroke="#FF6B00" stroke-width="0.5"/>
+            </svg>
+            <h1>AEGIIS</h1>
+            <p>Forge Your Shield</p>
+        </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="form-button">Sign In</button>
+        </form>
+        <div id="message" class="message"></div>
+        <div class="footer">
+            <a href="#">Forgot password?</a> • <a href="#">Help</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const messageEl = document.getElementById('message');
+            
+            // Show loading state
+            const submitButton = this.querySelector('.form-button');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Authenticating...';
+            submitButton.disabled = true;
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                messageEl.style.display = 'block';
+                
+                if (response.ok) {
+                    messageEl.className = 'message success';
+                    messageEl.textContent = data.message || 'Authentication successful!';
+                    
+                    // Redirect after successful login
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 1500);
+                } else {
+                    messageEl.className = 'message error';
+                    messageEl.textContent = data.message || 'Authentication failed. Please check your credentials.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageEl.style.display = 'block';
+                messageEl.className = 'message error';
+                messageEl.textContent = 'Connection error. Please check your network and try again.';
+            } finally {
+                // Restore button state
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

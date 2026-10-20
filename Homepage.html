@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegiis - Cybersecurity Learning Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Light mode colors */
+            --primary-light: #ffffff;
+            --secondary-light: #f0f0f0;
+            --accent-light: #ff6b00;
+            --text-light: #121212;
+            --danger-light: #ff3e3e;
+            --success-light: #00ff9d;
+            --background-light: #ffffff;
+            --card-light: rgba(0, 0, 0, 0.05);
+            
+            /* Dark mode colors */
+            --primary-dark: #0c0c0c;
+            --secondary-dark: #1a1a1a;
+            --accent-dark: #ff6b00;
+            --text-dark: #f0f0f0;
+            --danger-dark: #ff3e3e;
+            --success-dark: #00ff9d;
+            --background-dark: #0c0c0c;
+            --card-dark: rgba(255, 255, 255, 0.05);
+            
+            /* Default to dark mode */
+            --primary: var(--primary-dark);
+            --secondary: var(--secondary-dark);
+            --accent: var(--accent-dark);
+            --text: var(--text-dark);
+            --danger: var(--danger-dark);
+            --success: var(--success-dark);
+            --background: var(--background-dark);
+            --card: var(--card-dark);
+        }
+        
+        .light-mode {
+            --primary: var(--primary-light);
+            --secondary: var(--secondary-light);
+            --accent: var(--accent-light);
+            --text: var(--text-light);
+            --danger: var(--danger-light);
+            --success: var(--success-light);
+            --background: var(--background-light);
+            --card: var(--card-light);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        header {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        
+        nav a:hover {
+            color: var(--accent);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            color: #000;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.3);
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(to bottom right, var(--primary), var(--secondary));
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .hero-content {
+            width: 50%;
+            padding-left: 5%;
+            z-index: 10;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--text);
+            opacity: 0.7;
+        }
+        
+        .hero-graphics {
+            position: absolute;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .code-editor {
+            width: 80%;
+            background-color: #121212;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .editor-header {
+            background-color: #1e1e1e;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .editor-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .editor-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .editor-red {
+            background-color: #ff5f56;
+        }
+        
+        .editor-yellow {
+            background-color: #ffbd2e;
+        }
+        
+        .editor-green {
+            background-color: #27c93f;
+        }
+        
+        .editor-title {
+            color: #6c6c6c;
+            font-size: 0.8rem;
+        }
+        
+        .editor-content {
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #d4d4d4;
+            line-height: 1.4;
+        }
+        
+        .typing-text {
+            border-right: 2px solid var(--accent);
+            white-space: nowrap;
+            overflow: hidden;
+            animation: typing 4s steps(40) infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        .features {
+            padding: 5rem 5%;
+            background-color: var(--secondary);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--accent);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: var(--card);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-desc {
+            color: var(--text);
+            opacity: 0.7;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: var(--primary);
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+            width: 80%;
+            max-width: 500px;
+            animation: modalFade 0.3s;
+        }
+        
+        @keyframes modalFade {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .close-btn {
+            font-size: 1.5rem;
+            color: var(--text);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-btn:hover {
+            color: var(--accent);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #1a1a1a;
+            color: var(--text);
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2);
+        }
+        
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .form-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        
+        .form-link:hover {
+            text-decoration: underline;
+        }
+        
+        .grid-points {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+        }
+        
+        .floating-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            background-color: var(--accent);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 10s linear infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--card);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            background-color: var(--accent);
+        }
+        
+        .theme-toggle i {
+            font-size: 1.5rem;
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-content {
+                width: 100%;
+                padding: 0 5%;
+                margin-top: 5rem;
+            }
+            
+            .hero-graphics {
+                position: relative;
+                width: 100%;
+                height: 50%;
+                top: auto;
+                right: auto;
+            }
+            
+            .code-editor {
+                width: 90%;
+            }
+            
+            header {
+                padding: 1rem;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .auth-buttons {
+                margin-left: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">🛡️</div>
+            <div>AEGIIS</div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="Homepage.html">Home</a></li>
+                <li><a href="#">Challenges</a></li>
+                <li><a href="#">Learning Paths</a></li>
+                <li><a href="#">AI Tools</a></li>
+                <li><a href="#">Community</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button class="btn btn-outline" id="loginBtn" onclick="window.location.href='up.html'">Log In</button>
+            <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="grid-points"></div>
+        <div class="floating-particles" id="particles"></div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Learn, Practice, <span style="color: var(--accent);">Defend</span></h>
+                <p class="hero-subtitle">Master cybersecurity skills through interactive challenges and AI-powered guidance. Build your skills in a safe environment to protect against real-world threats.</p>
+                <div class="auth-buttons">
+                    <button class="btn btn-primary" onclick="window.location.href='up.html'">Get Started</button>
+                    <button class="btn btn-outline">Explore Challenges</button>
+                </div>
+            </div>
+            
+            <div class="hero-graphics">
+                <div class="code-editor">
+                    <div class="editor-header">
+                        <div class="editor-buttons">
+                            <div class="editor-button editor-red"></div>
+                            <div class="editor-button editor-yellow"></div>
+                            <div class="editor-button editor-green"></div>
+                        </div>
+                        <div class="editor-title">sql_injection.py</div>
+                    </div>
+                    <div class="editor-content">
+                        <div class="typing-text" id="typingText">
+                            # SQL Injection vulnerability detected
+                            # AI Analysis: High Risk
+                            
+                            def user_login(username, password):
+                                query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+                                # Vulnerability: Unparameterized SQL query
+                                # Suggestion: Use parameterized queries
+                                
+                                # Secure alternative:
+                                # query = "SELECT * FROM users WHERE username=? AND password=?"
+                                # cursor.execute(query, (username, password))
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <!-- Features Section -->
+        <section class="features">
+            <h2 class="section-title">Why Choose Aegiis</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Practical Challenges</h3>
+                    <p class="feature-desc">Learn by doing with real-world scenarios that simulate actual cyber attacks and defenses.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">AI-Powered Analysis</h3>
+                    <p class="feature-desc">Get instant feedback and guidance from our advanced AI that helps you identify and fix security vulnerabilities.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Safe Environment</h3>
+                    <p class="feature-desc">Practice offensive and defensive techniques in a controlled sandbox without legal or ethical concerns.</p>
+                </div>
